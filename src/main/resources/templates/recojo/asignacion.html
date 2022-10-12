@@ -1,7 +1,5 @@
 <!doctype html>
-<html lang="es"
-   xmlns:th="http://www.thymeleaf.org"
-   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeLeaf.org" >
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,8 +29,8 @@
                 <ul class="nav side-menu">
                   <li><a><i class="fa fa-home"></i> Mantenimientos <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a th:href="@{/cliente}">Cliente</a></li>
-                      <li><a th:href="@{/motorizado}">Motorizado</a></li>
+                      <li><a th:href="@{/cliente/nuevo}">Cliente</a></li>
+                      <li><a th:href="@{/motorizado/nuevo}">Motorizado</a></li>
                     </ul>
                   </li>
                   <li><a><i class="fa fa-edit"></i> Asignacion <span class="fa fa-chevron-down"></span></a>
@@ -148,8 +146,98 @@
 
         <!-- page content -->
         <div class="right_col" role="main">
-      		<div layout:fragment="content">
-      		</div>
+   			<div class="">
+					<div class="clearfix"></div>
+					<div class="row">
+						<div class="col-md-12 ">
+							<div class="x_panel">
+								<div class="x_title">
+									<h2>Asignar PickUp <small></small></h2>
+									<div class="clearfix"></div>
+								</div>
+								<div class="x_content">
+									<br>
+									<form class="form-horizontal form-label-left">
+                                        <div class="form-group">
+											<div class="">
+												<button type="submit" class="btn btn-info">Recargar</button>
+											</div>
+										</div>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped jambo_table bulk_action">
+                                              <thead>
+                                                <tr class="headings">
+
+                                                  <th class="column-title" style="display: table-cell;">Nunero </th>
+                                                  <th class="column-title" style="display: table-cell;">Cliente </th>
+                                                  <th class="column-title" style="display: table-cell;">Fecha </th>
+                                                  <th class="column-title" style="display: table-cell;">Hora Recojo </th>
+                                                  <th class="column-title" style="display: table-cell;">Motorizado </th>
+                                                  <th class="column-title" style="display: table-cell;">Asignacion </th>
+                                                  <th class="bulk-actions" colspan="7" style="display: none;">
+                                                    <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt">1 Records Selected</span> ) <i class="fa fa-chevron-down"></i></a>
+                                                  </th>
+                                                </tr>
+                                              </thead>
+                      
+                                              <tbody>
+                                                <tr class="even pointer">
+                                                  <td class=" ">1</td>
+                                                  <td class=" ">Cliente 1</td>
+                                                  <td class=" ">22/09/2022</td>
+                                                  <td class=" ">11:07</td>
+                                                  <td class=" ">joel</td>
+                                                  <td class=" last"><a class="btn btn-sm btn-dark" href="#" disabled="">Asignar</a>
+                                                  </td>
+                                                </tr>
+                                                <tr class="odd pointer">
+                                                    <td class=" ">2</td>
+                                                    <td class=" ">Cliente 2</td>
+                                                    <td class=" ">22/09/2022</td>
+                                                    <td class=" ">11:07</td>
+                                                    <td class=" "></td>
+                                                    <td class=" last"><a class="btn btn-sm btn-success" href="#">Asignar</a>
+                                                    </td>
+                                                </tr>
+                                                <tr class="even pointer">
+                                                    <td class=" ">3</td>
+                                                    <td class=" ">Cliente 3</td>
+                                                    <td class=" ">22/09/2022</td>
+                                                    <td class=" ">11:07</td>
+                                                    <td class=" "></td>
+                                                    <td class=" last"><a class="btn btn-sm btn-success" href="#">Asignar</a>
+                                                    </td>
+                                                  </tr>
+                                                  <tr class="odd pointer">
+                                                      <td class=" ">4</td>
+                                                      <td class=" ">Cliente 4</td>
+                                                      <td class=" ">22/09/2022</td>
+                                                      <td class=" ">11:07</td>
+                                                      <td class=" "></td>
+                                                      <td class=" last"><a class="btn btn-sm btn-success" href="#">Asignar</a>
+                                                      </td>
+                                                  </tr>
+                                              </tbody>
+                                            </table>
+                                          </div>
+									
+
+
+									</form>
+								</div>
+							</div>
+						</div>
+
+
+					</div>
+
+
+				</div>
+
+         
+
+
+         
         </div>
         <!-- /page content -->
 

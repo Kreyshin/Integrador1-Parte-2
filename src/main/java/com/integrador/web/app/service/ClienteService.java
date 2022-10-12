@@ -4,12 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import com.integrador.web.app.interfaceService.IpersonaService;
+import com.integrador.web.app.interfaceService.IclienteService;
 import com.integrador.web.app.interfaces.ICliente;
 import com.integrador.web.app.model.Cliente;
 
-public class ClienteService implements IpersonaService {
+
+@Service
+public class ClienteService implements IclienteService {
 
 	@Autowired
 	private ICliente data;
@@ -27,8 +30,13 @@ public class ClienteService implements IpersonaService {
 
 	@Override
 	public int Insertar(Cliente c) {
-		// TODO Auto-generated method stub
-		return 0;
+		int res = 0;
+	    Cliente cliente = data.save(c);
+	    
+	    if(!cliente.equals(null)) {
+	    	res = 1;
+	    }	    
+		return res;
 	}
 
 }

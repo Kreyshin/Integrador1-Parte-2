@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{index.html}">
+
+<head>
+	<meta charset="utf-8">
+	<title>Clientes</title>
+</head>
+
+<body>
+
+	<div layout:fragment="content" class="">
+		<div class="clearfix"></div>
+		<div class="row">
+			<div class="col-md-12 ">
+				<div class="x_panel">
+					<div class="x_title">
+						<h2>Cliente <small>Ingrese un nuevo cliente</small></h2>
+						<div class="clearfix"></div>
+					</div>
+					<div class="x_content">
+						<br>
+						<form class="form-horizontal form-label-left">
+							<div class="form-group">
+								<div class="">
+									<a href="/cliente/nuevo" class="btn btn-primary mb-3">
+										Agregar Cliente </a>
+								</div>
+							</div>
+							<div class="table-responsive">
+								<table class="table table-striped jambo_table bulk_action">
+									<thead>
+										<tr class="headings">
+
+											<th class="column-title" style="display: table-cell;">ID </th>
+											<th class="column-title" style="display: table-cell;">NOMBRE </th>
+											<th class="column-title" style="display: table-cell;">AP. PATERNO </th>
+											<th class="column-title" style="display: table-cell;">AP. MATERNO </th>
+											<th class="column-title" style="display: table-cell;">TIP. DOCUMENTO </th>
+											<th class="column-title" style="display: table-cell;">NUM. DOCUMENTO </th>
+											<th class="column-title" style="display: table-cell;">CORREO </th>
+											<th class="column-title" style="display: table-cell;">TELEFONO </th>
+											<th class="column-title" style="display: table-cell;"></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="cliente : ${clientes}" th:object="${cliente}">
+											<td th:text="${cliente.id}"></td>
+											<td th:text="${cliente.nombre}"></td>
+											<td th:text="${cliente.apePaterno}"></td>
+											<td th:text="${cliente.apeMaterno}"></td>
+											<td th:text="${cliente.tipDocumento}"></td>
+											<td th:text="${cliente.numDocumento}"></td>
+											<td th:text="${cliente.correo}"></td>
+											<td th:text="${cliente.telefono}"></td>
+											<td class="text-end">
+												<a th:href="@{/cliente/{id}/editar(id=*{id})}">Editar</a>
+												<a href="javascript:void(0)" class="text-danger ms-3"
+													th:onclick="'eliminarPelicula(' + *{id} +')'">Eliminar</a>
+												<form th:id="'eliminarPeliculaForm' + *{id}"
+													th:action="@{/admin/peliculas/{id}/eliminar(id=*{id})}"
+													method="post" class="d-none">
+												</form>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+	<div layout:fragment="scripts">
+		<script>
+			function eliminarPelicula(id) {
+				if (!confirm('¿Estás seguro de eliminar esta película?')) {
+					return;
+				}
+				$('#eliminarPeliculaForm' + id).submit();
+			}
+		</script>
+	</div>
+
+</body>
+
+</html>
