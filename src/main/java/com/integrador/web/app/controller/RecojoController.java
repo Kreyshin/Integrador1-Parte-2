@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -45,9 +47,8 @@ public class RecojoController {
 				.addObject("motorizados",motorizados);
 	}
 	
-	@GetMapping("/asignarMotorizado/{idRecojo}/{idMotorizado}")
-	public ModelAndView asignarMotorizado(@PathVariable int idRecojo, @PathVariable int idMotorizado) {
-		
+	@PostMapping("/asignarMotorizado")
+	public ModelAndView asignarMotorizado( int idRecojo, int idMotorizado) {
 		Optional<Recojo> recojo = service.BucarPorId(idRecojo);
 		Recojo recojoActualizar = recojo.get();
 		Optional<Motorizado> motorizado = serviceMotorizado.BuscarPorId(idMotorizado);
@@ -63,6 +64,8 @@ public class RecojoController {
 		List<IRecojoGroupByMotorizado> recojos = service.ListarRecojosPorMotorizado();
 		return new ModelAndView("recojo/ConsultaRecojo").addObject("recojos", recojos);
 	}
+	
+	
 	
 	
 }

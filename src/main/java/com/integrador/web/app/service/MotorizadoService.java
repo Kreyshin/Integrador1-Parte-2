@@ -37,4 +37,9 @@ public class MotorizadoService implements ImotorizadoService {
 		return res;
 	}
 
+	@Override
+	public List<Motorizado> listarPorPlaca(String busccar) {
+		return  (List<Motorizado>)data.filtrarPorPlaca(busccar);
+	}
+
 }
