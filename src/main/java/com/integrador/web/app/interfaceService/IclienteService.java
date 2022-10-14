@@ -9,4 +9,5 @@ public interface IclienteService {
      public List<Cliente>Listar();
      public Optional<Cliente>BuscarPorId(int id);
      public int Insertar(Cliente c);
+     public int Eliminar(Cliente clie);
 }

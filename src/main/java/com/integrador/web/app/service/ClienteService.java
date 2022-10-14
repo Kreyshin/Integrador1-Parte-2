@@ -24,8 +24,8 @@ public class ClienteService implements IclienteService {
 
 	@Override
 	public Optional<Cliente> BuscarPorId(int id) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+		Optional<Cliente> cliente = data.findById(id);
+		return cliente;
 	}
 
 	@Override
@@ -37,6 +37,12 @@ public class ClienteService implements IclienteService {
 	    	res = 1;
 	    }	    
 		return res;
+	}
+
+	@Override
+	public int Eliminar(Cliente clie) {
+		data.delete(clie);
+		return 1;
 	}
 
 }

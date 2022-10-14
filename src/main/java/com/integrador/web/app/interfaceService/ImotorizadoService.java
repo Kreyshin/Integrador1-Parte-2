@@ -10,4 +10,5 @@ public interface ImotorizadoService {
     public Optional<Motorizado>BuscarPorId(int id);
     public int Insertar(Motorizado c);
     public List<Motorizado> listarPorPlaca(String busccar);
+    public int Eliminar(Motorizado moto);
 }

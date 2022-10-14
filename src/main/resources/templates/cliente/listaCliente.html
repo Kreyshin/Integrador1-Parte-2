@@ -54,13 +54,10 @@
 											<td th:text="${cliente.correo}"></td>
 											<td th:text="${cliente.telefono}"></td>
 											<td class="text-end">
-												<a th:href="@{/cliente/{id}/editar(id=*{id})}">Editar</a>
+												<a th:href="@{cliente/{id}/editar(id=${cliente.id})}">Editar</a>
+
 												<a href="javascript:void(0)" class="text-danger ms-3"
-													th:onclick="'eliminarPelicula(' + *{id} +')'">Eliminar</a>
-												<form th:id="'eliminarPeliculaForm' + *{id}"
-													th:action="@{/admin/peliculas/{id}/eliminar(id=*{id})}"
-													method="post" class="d-none">
-												</form>
+													th:onclick="'eliminarCliente(' + ${cliente.id} +')'">Eliminar</a>
 											</td>
 										</tr>
 									</tbody>
@@ -77,11 +74,18 @@
 
 	<div layout:fragment="scripts">
 		<script>
-			function eliminarPelicula(id) {
-				if (!confirm('¿Estás seguro de eliminar esta película?')) {
-					return;
-				}
-				$('#eliminarPeliculaForm' + id).submit();
+			function eliminarCliente(id) {
+				$.ajax({
+					type: "POST",
+					data: {
+						idCliente: id
+					},
+					url: '/cliente/eliminar',
+					success: function (data) {
+						window.location.href = "http://localhost:8080/cliente";
+					},
+					error: function () { }
+				});
 			}
 		</script>
 	</div>

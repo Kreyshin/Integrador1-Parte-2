@@ -42,4 +42,10 @@ public class MotorizadoService implements ImotorizadoService {
 		return  (List<Motorizado>)data.filtrarPorPlaca(busccar);
 	}
 
+	@Override
+	public int Eliminar(Motorizado moto) {
+		data.delete(moto);
+		return 0;
+	}
+
 }

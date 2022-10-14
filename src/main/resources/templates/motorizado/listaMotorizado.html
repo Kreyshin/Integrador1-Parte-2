@@ -60,13 +60,10 @@
 											<td th:text="${motorizado.numLicencia}"></td>
 											<td th:text="${motorizado.numPlaca}"></td>
 											<td class="text-end">
-												<a th:href="@{/motorizado/{id}/editar(id=*{id})}">Editar</a>
+												<a th:href="@{/motorizado/{id}/editar(id=${motorizado.id})}">Editar</a>
+												
 												<a href="javascript:void(0)" class="text-danger ms-3"
-													th:onclick="'eliminarPelicula(' + *{id} +')'">Eliminar</a>
-												<form th:id="'eliminarPeliculaForm' + *{id}"
-													th:action="@{/motorizado/{id}/eliminar(id=*{id})}"
-													method="post" class="d-none">
-												</form>
+													th:onclick="'eliminarMotorizado(' + ${motorizado.id} +')'">Eliminar</a>												
 											</td>
 										</tr>
 									</tbody>
@@ -83,11 +80,18 @@
 
 	<div layout:fragment="scripts">
 		<script>
-			function eliminarPelicula(id) {
-				if (!confirm('¿Estás seguro de eliminar esta película?')) {
-					return;
-				}
-				$('#eliminarPeliculaForm' + id).submit();
+			function eliminarMotorizado(id) {
+				$.ajax({
+					type: "POST",
+					data: {
+						idMotorizado: id
+					},
+					url: '/motorizado/eliminar',
+					success: function (data) {
+						window.location.href = "http://localhost:8080/motorizado";
+					},
+					error: function () { }
+				});
 			}
 		</script>
 	</div>
