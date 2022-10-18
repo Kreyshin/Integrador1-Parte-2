@@ -1,3 +1,22 @@
+
+toastr.options = {
+    "closeButton": false,
+    "debug": false,
+    "newestOnTop": false,
+    "progressBar": true,
+    "positionClass": "toast-bottom-left",
+    "preventDuplicates": false,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+};
+
 const FGlobal = {
     Confirmacion: (titulo, funcion) => {
         $.confirm({
@@ -23,6 +42,23 @@ const FGlobal = {
                     }
                 }
             }
+        });
+    },
+    notificacion: {
+        satisfactorio: (titulo,mensaje) => {
+            toastr.success(mensaje, titulo);
+        },
+        peligro: (titulo, mensaje) => {
+            toastr.warning(mensaje, titulo);
+        },
+        error: (titulo, mensaje) => {
+            toastr.error(mensaje, titulo);
+        }
+    },
+    NotificacionCentro: (mensaje) => {
+        $.alert({
+            title: 'Aviso!',
+            content: mensaje,
         });
     },
     LibValidacion: {

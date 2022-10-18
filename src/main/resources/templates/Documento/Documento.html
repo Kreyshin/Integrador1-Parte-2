@@ -165,16 +165,21 @@
                   </div>
                 </div>
               </div>
-              <div class="row justify-content-end">
-                <button id="btn_RegresarDocumento"
-                        class="btn btn-success"
-                        data-toggle="tooltip"
-                        title="Regresar a documento"
-                        type="button">
-                  <i class="fas fa-chevron-left"></i>
-                </button>
-              </div>
             </div>
+            <div class="card-footer d-flex justify-content-between">
+              <button id="btn_grabar"
+                      type="button"
+                      class="btn btn-primary mr-2">
+                Grabar
+              </button>
+              <button id="btn_RegresarDocumento"
+                      class="btn btn-success"
+                      data-toggle="tooltip"
+                      title="Regresar a documento"
+                      type="button">
+                 <i class="fas fa-chevron-left"></i>
+              </button>
+          </div>
           </div>
         </div>
         <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 form-group">
@@ -355,7 +360,7 @@
               data: null,
               render: function () {
                   return `<a class="btn btn-sm btn-clean btn-icon mr-2 edit" title="Editar">
-                             <span class="svg-icon svg-icon-md">
+                             <span class="svg-icon svg-icon-primary svg-icon-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                     <rect x="0" y="0" width="24" height="24"></rect>
@@ -367,7 +372,7 @@
                               </span>
                            </a>
                            <a href="javascript:;" class="btn btn-sm btn-clean btn-icon delete" title="Eliminar">
-                             <span class="svg-icon svg-icon-md">
+                             <span class="svg-icon svg-icon-danger svg-icon-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                        <rect x="0" y="0" width="24" height="24"></rect>
@@ -375,8 +380,19 @@
                                          <path d="M14,4.5 L14,4 C14,3.44771525 13.5522847,3 13,3 L11,3 C10.4477153,3 10,3.44771525 10,4 L10,4.5 L5.5,4.5 C5.22385763,4.5 5,4.72385763 5,5 L5,5.5 C5,5.77614237 5.22385763,6 5.5,6 L18.5,6 C18.7761424,6 19,5.77614237 19,5.5 L19,5 C19,4.72385763 18.7761424,4.5 18.5,4.5 L14,4.5 Z" fill="#000000" opacity="0.3"></path>
                                     </g>
                                  </svg>
-                                            </span>
-                                </a>
+                               </span>
+                            </a>
+                            <a href="javascript:;" class="btn btn-sm btn-clean btn-icon serie" title="Serie">
+                              <span class="svg-icon svg-icon-primary svg-icon-2x"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo1/dist/../src/media/svg/icons/Design/Substract.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <rect x="0" y="0" width="24" height="24"/>
+                                    <path d="M6,9 L6,15 C6,16.6568542 7.34314575,18 9,18 L15,18 L15,18.8181818 C15,20.2324881 14.2324881,21 12.8181818,21 L5.18181818,21 C3.76751186,21 3,20.2324881 3,18.8181818 L3,11.1818182 C3,9.76751186 3.76751186,9 5.18181818,9 L6,9 Z" fill="#000000" fill-rule="nonzero"/>
+                                    <path d="M10.1818182,4 L17.8181818,4 C19.2324881,4 20,4.76751186 20,6.18181818 L20,13.8181818 C20,15.2324881 19.2324881,16 17.8181818,16 L10.1818182,16 C8.76751186,16 8,15.2324881 8,13.8181818 L8,6.18181818 C8,4.76751186 8.76751186,4 10.1818182,4 Z" fill="#000000" opacity="0.3"/>
+                                  </g>
+                               </svg><!--end::Svg Icon--></span>
+                            </a>
+
+
                         `
                 }
             }
@@ -384,28 +400,68 @@
             language: VGlobal.table_es,
             "scrollX": true
         });
+     
+      $('#TblDocumento tbody').on( 'click', '.edit', function (e) {
+            e.preventDefault();
+            var data = TblDocumento.row( $(this).parents('tr') ).data();
+            BuscarPorId(data.id);
+      } );
+
+      $('#TblDocumento tbody').on( 'click', '.delete', function (e) {
+            e.preventDefault();
+            var data = TblDocumento.row( $(this).parents('tr') ).data();
+            Eliminar(data.id);
+
+      } );
+
+      $('#TblDocumento tbody').on( 'click', '.serie', function (e) {
+            e.preventDefault();
+            var data = TblDocumento.row( $(this).parents('tr') ).data();
+            if(data.indSeri == "S"){
+              $("#VDocumento").hide("slow");
+              $("#VListaDocumento").hide("slow");
+              CargarDatosDocumento({
+                    id: $("#txt_id_docu").val(),
+                    descripcion: $("#txt_des_docu").val()
+                });
+              $("#VDocumentoSerie").show("slow");
+            }else{
+              FGlobal.NotificacionCentro("Documento no Maneja Series");
+            }
+      } );
 
      LlenarTabla();
 
 
-        //Botones Mantenimiento
-        $('#btn_grabar').click((e) => {
-              if ($('#VDocumento').is(':visible')) {
-                if (VGlobal.actualizar == true) {
-                        Actualizar(LlenarDatos());
-                } else {
-                        Grabar(LlenarDatos());
-                }
-            } else {
-              if (VGlobal.actualizar == true) {
-                   ActualizarSerie(LlenarDatosSerie());
-              } else {
-                  GrabarSerie(LlenarDatosSerie());
-              }
-            }
-        });
+     //Botones Mantenimiento
+     $('#btn_grabar').click((e) => {
+        if (VGlobal.actualizar == true) {
+              Actualizar(LlenarDatos());
+           } else {
+              Grabar(LlenarDatos());
+          }
+       });
 
-        function LlenarTabla() {
+        //Botones Mantenimiento Documento Serie
+     $('#btn_RegresarDocumento').click((e) => {
+         $("#VDocumentoSerie").hide("slow");
+         $("#VDocumento").show("slow");
+         $("#VListaDocumento").show("slow");
+        //  FGlobal.AjustarTablasLento();
+     });
+
+     $('input:radio[name=rdb_estado]').on("click",function (e) {
+          if (this.value == 'ACT') {
+              $("#cro_inactivo").removeClass("btn-danger").addClass("btn-secondary");
+              $("#cro_activo").removeClass("btn-secondary btn-primary").addClass("btn-primary");
+          }
+          else {
+              $("#cro_activo").removeClass("btn-primary").addClass("btn-secondary");
+              $("#cro_inactivo").removeClass("btn-secondary btn-danger").addClass("btn-danger");
+          }
+      });
+
+     function LlenarTabla() {
             $.ajax({
                 type: "GET",
                 url: `documento/listar`,
@@ -416,23 +472,24 @@
             });
         }
 
-        function Grabar(p_param) {
+     function Grabar(p_param) {
             let metodo = function () {
                 $.ajax({
                     type: "POST",
                     url: `documento/insertar`,
                     data: { 
-
-
+                      desDocu: p_param.desDocu,
+                      indSeri: p_param.indSeri,
+                      numLongCorr: p_param.numLongCorr,
+                      indCorrAuto: p_param.indCorrAuto,
+                      numUltiCorr: p_param.numUltCorr,
+                      estado: p_param.estado
                     },
                     dataType: "json",
                     success: function (response) {
-                        if (response == "OK") {
-                            FGlobal.notificacion.satisfactorio("Aviso", "Se Grabo con Exito!!");
-                            $("#txt_cod_documento").val("");
+                            // FGlobal.notificacion.satisfactorio("Aviso", "Se Grabo con Exito!!");
+                            TblDocumento.clear().rows.add(response.lista).columns.adjust().draw();
                             LimpiarCampos();
-                            LlenarTabla();
-                        }
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
 
@@ -442,72 +499,124 @@
             FGlobal.Confirmacion("¿Desea Grabar el Documento?", metodo)
         }
 
-        function Actualizar(p_param) {
-              $.ajax({
+     function Actualizar(p_param) {
+      let metodo = function () {
+             $.ajax({
                     type: "POST",
-                    url: `condicionPago/actualizar`,
-                    data: {
-                      Id: p_param.id,
-                      DesCondPago: p_param.descripcion,
-                      NumDias: p_param.numDias
+                    url: `documento/actualizar`,
+                    data: { 
+                      id: p_param.id,
+                      desDocu: p_param.desDocu,
+                      indSeri: p_param.indSeri,
+                      numLongCorr: p_param.numLongCorr,
+                      indCorrAuto: p_param.indCorrAuto,
+                      numUltiCorr: p_param.numUltCorr,
+                      estado: p_param.estado
                     },
                     dataType: "json",
-                    async: false,
                     success: function (response) {
-                       TblCondPago.clear().rows.add(response.lista).columns.adjust().draw();
-                       $("#txt_id_condPago").val("");
-                       $("#txt_des_condPago").val("");
-                       $("#txt_num_dias").val("");
-                       VGlobal.actualizar = false;
-                    }
-                });
-        }
-
-        function Eliminar(id) {
-              $.ajax({
-                    type: "POST",
-                    url: `condicionPago/eliminar`,
-                    data: {
-                      Id: id,
+                            // FGlobal.notificacion.satisfactorio("Aviso", "Se Grabo con Exito!!");
+                            TblDocumento.clear().rows.add(response.lista).columns.adjust().draw();
+                            $("#txt_id_docu").val("");
+                            LimpiarCampos();
                     },
-                    dataType: "json",
-                    async: false,
-                    success: function (response) {
-                       TblCondPago.clear().rows.add(response.lista).columns.adjust().draw();
+                    error: function (jqXHR, textStatus, errorThrown) {
+
                     }
                 });
+            }
+            FGlobal.Confirmacion("¿Desea Actualizar el Documento?", metodo)
         }
 
-        function LlenarDatos() {
+     function Eliminar(id) {
+        $.ajax({
+              type: "POST",
+              url: `documento/eliminar`,
+              data: {
+                Id: id,
+              },
+              dataType: "json",
+              async: false,
+              success: function (response) {
+                TblDocumento.clear().rows.add(response.lista).columns.adjust().draw();
+              }
+        });
+      }
+
+     function LlenarDatos() {
             let p_param = {
-                codigo: $("#txt_cod_documento").val(),
-                descripcion: $("#txt_des_documento").val(),
-                ind_serie: ind_serie,
-                lon_correlativo: $("#txt_lon_correlativo").val() == "" ? 0 : $("#txt_lon_correlativo").val(),
-                ind_corr_automatico: ind_automatico,
-                ult_correlativo: $("#txt_ult_correlativo").val() == "" ? 0 : $("#txt_ult_correlativo").val(),
-                tip_situ: $('input:radio[name=rdb_estado]:checked').val()
+                id: VGlobal.actualizar == false ? null : $("#txt_id_docu").val(),
+                desDocu: $("#txt_des_docu").val(),
+                indSeri: $('#chk_ind_serie').is(':checked') == true ? "S" : "N",
+                numLongCorr: $("#txt_lon_corr").val() == "" ? 0 : $("#txt_lon_corr").val(),
+                indCorrAuto: $('#chk_ind_corr_auto').is(':checked') == true ? "S" : "N",
+                numUltCorr: $("#txt_ult_corr").val() == "" ? 0 : $("#txt_ult_corr").val(),
+                estado: $('input:radio[name=rdb_estado]:checked').val()
             }
             return p_param;
         }
 
-        $('#TblCondPago tbody').on( 'click', '.edit', function (e) {
-            e.preventDefault();
-            var data = TblCondPago.row( $(this).parents('tr') ).data();
-            $("#txt_id_condPago").val(data.id);
-            $("#txt_des_condPago").val(data.desCondPago);
-            $("#txt_num_dias").val(data.numDias);
-            VGlobal.actualizar = true;
-        } );
+     function LimpiarCampos() {
+           $("#txt_des_docu").val("");
+           $('#chk_ind_serie').prop("checked",false);
+           $("#txt_lon_corr").val("");
+           $('#chk_ind_corr_auto').prop("checked",false);
+           $("#txt_ult_corr").val("");
+           $('#ro_activo').prop("checked",true);
+           $('#cro_activo').removeClass("btn-secondary").addClass("btn-primary");
+           $('#cro_inactivo').removeClass("btn-danger").addClass("btn-secondary");
+           $('#ro_inactivo').prop("disabled",true);
+      }
 
-        $('#TblCondPago tbody').on( 'click', '.delete', function (e) {
-            e.preventDefault();
-            var data = TblCondPago.row( $(this).parents('tr') ).data();
-            Eliminar(data.id);
-
-        } );
-
-
+     function BuscarPorId(id) {  
+          $.ajax({
+            type: "GET",
+            url: "documento/buscarPorId",
+            data: {
+              Id: id
+            },
+            dataType: "json",
+            success: function (response) {
+              $("#txt_id_docu").val(response.data.id);
+              $("#txt_des_docu").val(response.data.desDocu);
+              $("#txt_lon_corr").val(response.data.numLongCorr);
+              $("#txt_ult_corr").val(response.data.numUltiCorr);
+              response.data.indSeri == "S" ?  $('#chk_ind_serie').prop("checked",true) :  $('#chk_ind_serie').prop("checked",false);
+              response.data.indCorrAuto == "S" ?  $('#chk_ind_corr_auto').prop("checked",true) :  $('#chk_ind_corr_auto').prop("checked",false);
+              if (response.data.estado == "ACT") {
+                $('#ro_activo').prop("checked",true);
+                $('#cro_activo').removeClass("btn-secondary").addClass("btn-primary");
+                $('#cro_inactivo').removeClass("btn-danger").addClass("btn-secondary");
+              }else{
+                $('#ro_inactivo').prop("checked",true);
+                $('#cro_inactivo').removeClass("btn-secondary").addClass("btn-danger");
+                $('#cro_activo').removeClass("btn-primary").addClass("btn-secondary");
+              }
+              $('#ro_inactivo').prop("disabled",false);
+              VGlobal.actualizar = true;
+            }
+          });
+     } 
+     //Funciones Documento Serie
+     function CargarDatosDocumento(documento) {
+            $("#txt_id_doc_serie").val(documento.id);
+            $("#txt_des_doc_serie").val(documento.descripcion);
+            LlenarTablaDocumentoSerie();
+      }
+      function LlenarTablaDocumentoSerie() {
+            $.ajax({
+                type: "GET",
+                url: `documentoSerie/listar`,
+                data: {
+                    IdDoc: $("#txt_id_doc_serie").val()
+                },
+                dataType: "json",
+                async: false,
+                success: function (response) {
+                    TblDocumentoSerie.clear().rows.add(response.lista).columns.adjust().draw();
+                }
+            });
+        }
 
 
   </script>
