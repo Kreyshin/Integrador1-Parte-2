@@ -187,4 +187,14 @@ const FGlobal = {
             }
         }
     },
+    AjustarTablas: () => {
+        setTimeout(function () {
+            $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();
+        }, 200)
+    },
+    AjustarTablasLento: () => {
+        setTimeout(function () {
+            $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();
+        }, 800)
+    }
 }

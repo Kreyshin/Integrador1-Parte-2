@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{index.html}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.ultraq.net.nz/thymeleaf/layout ">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Empresa</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+  <div class="row" >
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 form-group" id="VDocumento">
+      <div class="card card-custom card-outline card-sistema">
+        <!--begin::Header-->
+        <div class="card-header flex-wrap border-0 pt-6 pb-0">
+          <h3 class="card-title align-items-start flex-column">
+            <span class="card-label font-weight-bolder text-dark">Empresa</span>
+            <span class="text-muted mt-1 font-weight-bold font-size-sm"></span>
+          </h3>
+        </div>
+        <!--end::Header-->
+        <!--begin::Body-->
+        <div class="card-body">
+          <div class="row lg-wrap">
+            <div class="col-sm-1 col-md-2 d-none">
+              <div class="form-group">
+                <label class="control-label">Id</label>
+                <input class="form-control form-control-sm" type="text" id="txt_id_empr" data-valida="true">
+              </div>
+            </div>
+            <div class="col-sm-1 col-md-4 col-lg-4">
+              <div class="form-group">
+                <label class="control-label">Nombre</label>
+                <input class="form-control form-control-sm" type="text" id="txt_nom_empr" data-valida="true">
+              </div>
+            </div>
+            <div class="col-sm-1 col-md-2">
+              <div class="form-group">
+                <label class="control-label">RUC</label>
+                <input class="form-control form-control-sm" type="text" id="txt_num_rucs" data-valida="true">
+              </div>
+            </div>
+            <div class="col-sm-1 col-md-4 col-lg-4">
+                <div class="form-group">
+                  <label class="control-label">Direccion</label>
+                  <input class="form-control form-control-sm" type="text" id="txt_des_dire" data-valida="true">
+                </div>
+            </div>
+            <div class="col-sm-1 col-md-2">
+                <div class="form-group">
+                  <label class="control-label">Telefono</label>
+                  <input class="form-control form-control-sm" type="tel" id="txt_num_telf" data-valida="true">
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button
+                  id="btn_grabar"
+                  type="button"
+                  class="btn btn-primary mr-2"
+          >
+            Grabar
+          </button>
+        </div>
+      </div>
+    </div>    
+  </div>
+ 
+</div>
+
+<div layout:fragment="scripts">
+  <script>
+     BuscarEmpresa();
+
+     //Botones Mantenimiento
+    $('#btn_grabar').click((e) => {
+        Actualizar();   
+    });
+
+    function BuscarEmpresa() {
+       $.ajax({
+             type: "GET",
+             url: `empresa/buscarEmpresa`,
+             data: {},
+             dataType: "json",
+             async: false,
+             success: function (response) {
+               $("#txt_id_empr").val(response.data.id);
+               $("#txt_nom_empr").val(response.data.nomEmpr);
+               $("#txt_num_rucs").val(response.data.numRucs);
+               $("#txt_des_dire").val(response.data.desDire);
+               $("#txt_num_telf").val(response.data.numTel1);
+             }
+       });
+     }
+
+    function Actualizar() {
+       let metodo = function () {
+           $.ajax({
+               type: "POST",
+               url: `empresa/actualizar`,
+               data: { 
+                id:$("#txt_id_empr").val(),
+                nomEmpr:$("#txt_nom_empr").val(),
+                numRucs:$("#txt_num_rucs").val(),
+                desDire:$("#txt_des_dire").val(),
+                numTel1:$("#txt_num_telf").val(),  
+               },
+               dataType: "json",
+               success: function (response) {
+                       FGlobal.notificacion.satisfactorio("Aviso", "Se Actualizo con Exito!!");                       
+               },
+               error: function (jqXHR, textStatus, errorThrown) {
+
+               }
+           });
+       }
+       FGlobal.Confirmacion("¿Desea Actualizar la Empresa?", metodo)
+    }
+
+  </script>
+</div>
+</body>
+</html>

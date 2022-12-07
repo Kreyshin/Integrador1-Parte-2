@@ -167,7 +167,7 @@
               </div>
             </div>
             <div class="card-footer d-flex justify-content-between">
-              <button id="btn_grabar"
+              <button id="btn_grabar_serie"
                       type="button"
                       class="btn btn-primary mr-2">
                 Grabar
@@ -200,10 +200,12 @@
               <table id="TblDocumentoSerie" class="table table-separate table-head-custom dataTable no-footer dtr-inline" width="100%">
                 <thead>
                 <tr>
+                  <th>Id</th>
                   <th>N° Serie</th>
                   <th>Descripcion</th>
                   <th>Ind. Correlativo Automatico</th>
                   <th>Ultimo Correlativo</th>
+                  <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -304,11 +306,9 @@
 <div layout:fragment="scripts">
   <script>
      //Variables
-     var ind_serie = "N";
-     var ind_automatico = "N";
-     var ind_corr_auto_serie = "N";
      var DocumentoSerie = false;
      VGlobal.actualizar = false;
+     var IdeSeri = null;
      const TblDocumento = $('#TblDocumento').DataTable({
             columns: [
                 { data: 'id' },
@@ -400,7 +400,7 @@
             language: VGlobal.table_es,
             "scrollX": true
         });
-     
+               
       $('#TblDocumento tbody').on( 'click', '.edit', function (e) {
             e.preventDefault();
             var data = TblDocumento.row( $(this).parents('tr') ).data();
@@ -421,34 +421,109 @@
               $("#VDocumento").hide("slow");
               $("#VListaDocumento").hide("slow");
               CargarDatosDocumento({
-                    id: $("#txt_id_docu").val(),
-                    descripcion: $("#txt_des_docu").val()
+                    id: data.id,
+                    descripcion: data.desDocu
                 });
               $("#VDocumentoSerie").show("slow");
+              FGlobal.AjustarTablas();
+              VGlobal.actualizar = false;
             }else{
               FGlobal.NotificacionCentro("Documento no Maneja Series");
             }
       } );
+         
+      const TblDocumentoSerie = $('#TblDocumentoSerie').DataTable({
+         columns: [
+             { data: 'id' },
+             { data: 'numSeri' },
+             { data: 'desSeri' },
+             { data: 'indCorrAuto' },
+             { data: 'numUltiCorr' },
+             {
+              data: null,
+              render: function () {
+                  return `<a class="btn btn-sm btn-clean btn-icon mr-2 edit" title="Editar">
+                             <span class="svg-icon svg-icon-primary svg-icon-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                   <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <rect x="0" y="0" width="24" height="24"></rect>
+                                      <path d="M8,17.9148182 L8,5.96685884 C8,5.56391781 8.16211443,5.17792052 8.44982609,4.89581508 L10.965708,2.42895648 C11.5426798,1.86322723 12.4640974,1.85620921 13.0496196,2.41308426 L15.5337377,4.77566479 C15.8314604,5.0588212 16,5.45170806 16,5.86258077 L16,17.9148182 C16,18.7432453 15.3284271,19.4148182 14.5,19.4148182 L9.5,19.4148182 C8.67157288,19.4148182 8,18.7432453 8,17.9148182 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000000, 10.707409) rotate(-135.000000) translate(-12.000000, -10.707409) ">
+                                        </path>
+                                    <rect fill="#000000" opacity="0.3" x="5" y="20" width="15" height="2" rx="1"></rect>
+                                    </g>
+                                </svg>
+                              </span>
+                           </a>
+                           <a href="javascript:;" class="btn btn-sm btn-clean btn-icon delete" title="Eliminar">
+                             <span class="svg-icon svg-icon-danger svg-icon-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                   <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                       <rect x="0" y="0" width="24" height="24"></rect>
+                                         <path d="M6,8 L6,20.5 C6,21.3284271 6.67157288,22 7.5,22 L16.5,22 C17.3284271,22 18,21.3284271 18,20.5 L18,8 L6,8 Z" fill="#000000" fill-rule="nonzero"></path>
+                                         <path d="M14,4.5 L14,4 C14,3.44771525 13.5522847,3 13,3 L11,3 C10.4477153,3 10,3.44771525 10,4 L10,4.5 L5.5,4.5 C5.22385763,4.5 5,4.72385763 5,5 L5,5.5 C5,5.77614237 5.22385763,6 5.5,6 L18.5,6 C18.7761424,6 19,5.77614237 19,5.5 L19,5 C19,4.72385763 18.7761424,4.5 18.5,4.5 L14,4.5 Z" fill="#000000" opacity="0.3"></path>
+                                    </g>
+                                 </svg>
+                               </span>
+                            </a>
+                        `
+                }
+            }
+         ],
+         scrollY: '20vh',
+         info: false,
+         paging: false,
+         language: VGlobal.table_es
+     });
+
+     $('#TblDocumentoSerie tbody').on( 'click', '.edit', function (e) {
+            e.preventDefault();
+            var data = TblDocumentoSerie.row( $(this).parents('tr') ).data();
+            BuscarSerieDocumento(data.id);
+      } );
+
+      $('#TblDocumentoSerie tbody').on( 'click', '.delete', function (e) {
+            e.preventDefault();
+            var data = TblDocumentoSerie.row( $(this).parents('tr') ).data();
+            EliminarSerie(data.id);
+
+      } );
+
 
      LlenarTabla();
 
 
      //Botones Mantenimiento
-     $('#btn_grabar').click((e) => {
-        if (VGlobal.actualizar == true) {
+      $('#btn_grabar').click((e) => {
+        if ($('#VDocumento').is(':visible')) {
+          if (VGlobal.actualizar == true) {
               Actualizar(LlenarDatos());
            } else {
               Grabar(LlenarDatos());
           }
-       });
+        }    
+      });
 
-        //Botones Mantenimiento Documento Serie
+       
+
+     //Botones Mantenimiento Documento Serie
      $('#btn_RegresarDocumento').click((e) => {
          $("#VDocumentoSerie").hide("slow");
          $("#VDocumento").show("slow");
          $("#VListaDocumento").show("slow");
-        //  FGlobal.AjustarTablasLento();
+         VGlobal.actualizar = false;
+         LimpiarCamposSerie();
+         FGlobal.AjustarTablasLento();
      });
+
+     $('#btn_grabar_serie').click((e) => {
+        if (!$('#VDocumento').is(':visible')) {
+          if (VGlobal.actualizar == true) {
+              ActualizarSerie(LlenarDatosSerie());
+           } else {
+              GrabarSerie(LlenarDatosSerie());
+          }
+        } 
+      });
 
      $('input:radio[name=rdb_estado]').on("click",function (e) {
           if (this.value == 'ACT') {
@@ -602,22 +677,124 @@
             $("#txt_id_doc_serie").val(documento.id);
             $("#txt_des_doc_serie").val(documento.descripcion);
             LlenarTablaDocumentoSerie();
-      }
-      function LlenarTablaDocumentoSerie() {
-            $.ajax({
-                type: "GET",
-                url: `documentoSerie/listar`,
-                data: {
-                    IdDoc: $("#txt_id_doc_serie").val()
-                },
-                dataType: "json",
-                async: false,
-                success: function (response) {
+      }     
+     function LlenarTablaDocumentoSerie() {
+           $.ajax({
+               type: "GET",
+               url: `documentoSerie/listar`,
+               data: {
+                   IdDoc: $("#txt_id_doc_serie").val()
+               },
+               dataType: "json",
+               async: false,
+               success: function (response) {
+                   TblDocumentoSerie.clear().rows.add(response.lista).columns.adjust().draw();
+               }
+           });
+       }      
+     function GrabarSerie(p_param) {
+          let metodo = function () {
+              $.ajax({
+                  type: "POST",
+                  url: `documentoSerie/insertar`,
+                  data: { 
+                    queryData: JSON.stringify({
+                      numSeri: p_param.numSeri,
+                      desSeri: p_param.desSeri,
+                      indCorrAuto: p_param.indCorrAuto,
+                      numUltiCorr: p_param.numUltiCorr,
+                    }),
+                    idDocu: $("#txt_id_doc_serie").val()
+                  },
+                  dataType: "json",
+                  success: function (response) {
+                    FGlobal.notificacion.satisfactorio("Aviso", "Se Grabo con Exito!!");
                     TblDocumentoSerie.clear().rows.add(response.lista).columns.adjust().draw();
-                }
-            });
-        }
+                    LimpiarCamposSerie();  
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
 
+                  }
+              });
+          }
+          FGlobal.Confirmacion("¿Desea Grabar la Serie?", metodo)
+      }
+     function ActualizarSerie(p_param) {
+         let metodo = function () {
+             $.ajax({
+                 type: "POST",
+                 url: `documentoSerie/actualizar`,
+                 data: { 
+                  queryData: JSON.stringify({
+                      id: p_param.id,
+                      numSeri: p_param.numSeri,
+                      desSeri: p_param.desSeri,
+                      indCorrAuto: p_param.indCorrAuto,
+                      numUltiCorr: p_param.numUltiCorr,
+                 }),
+                    idDocu: $("#txt_id_doc_serie").val() 
+                },
+                 dataType: "json",
+                 success: function (response) {
+                    FGlobal.notificacion.satisfactorio("Aviso", "Se Grabo con Exito!!");
+                    TblDocumentoSerie.clear().rows.add(response.lista).columns.adjust().draw();
+                    LimpiarCamposSerie();  
+                 }
+             });
+         }
+         FGlobal.Confirmacion("¿Desea Actualizar la Serie?", metodo);
+     }
+     function EliminarSerie(id) {
+        $.ajax({
+              type: "POST",
+              url: `documentoSerie/eliminar`,
+              data: {
+                idSeri: id,
+                idDocu: $("#txt_id_doc_serie").val()
+              },
+              dataType: "json",
+              async: false,
+              success: function (response) {
+                TblDocumentoSerie.clear().rows.add(response.lista).columns.adjust().draw();
+              }
+        });
+      }
+     function BuscarSerieDocumento(id) {
+       $.ajax({
+             type: "GET",
+             url: `documentoSerie/buscarSerieDocumento`,
+             data: {
+               idSeri: id,
+               idDocu: $("#txt_id_doc_serie").val()
+             },
+             dataType: "json",
+             async: false,
+             success: function (response) {
+               $("#txt_num_serie").val(response.data.numSeri);
+               $("#txt_des_serie").val(response.data.desSeri);
+               $("#txt_ult_corr_serie").val(response.data.numUltiCorr);
+               response.data.indCorrAuto == "S" ?  $('#chk_ind_corr_auto_serie').prop("checked",true) :  $('#chk_ind_corr_auto_serie').prop("checked",false);
+               IdeSeri = response.data.id
+               VGlobal.actualizar = true;
+             }
+       });
+     }      
+     function LimpiarCamposSerie() {
+      $("#txt_num_serie").val("");
+      $("#txt_des_serie").val("");
+      $("#txt_ult_corr_serie").val("");
+      $("#chk_ind_corr_auto_serie").prop("checked", false);
+     } 
+     function LlenarDatosSerie() {
+            let p_param = {
+                id: IdeSeri,
+                numSeri: $("#txt_num_serie").val(),
+                desSeri: $("#txt_des_serie").val(),
+                indCorrAuto: $('#chk_ind_corr_auto_serie').is(':checked') == true ? "S" : "N",
+                numUltiCorr: $("#txt_ult_corr_serie").val() == "" ? 0 : $("#txt_ult_corr_serie").val(),
+            }
+            return p_param;
+     }
 
   </script>
 </div>
