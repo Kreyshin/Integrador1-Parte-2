@@ -253,7 +253,7 @@
                         }
                     }
                 },
-                { data: 'FecExpi' },
+                { data: 'fecExpi' },
                 { data: 'codComp' },
                 { data: 'impCost' },
                 {
@@ -373,6 +373,7 @@
                 url: `producto/listar`,
                 dataType: "json",
                 success: function (response) {
+                  console.log(response.lista);
                   TblProducto.clear().rows.add(response.lista).columns.adjust().draw();
                 }
             });
@@ -456,6 +457,19 @@
         }
         FGlobal.Confirmacion("¿Desea Actualizar el Producto?", metodo);
         
+      }
+
+      function LimpiarCampos() {
+         $("#txt_id_prod").val("");
+         $("#txt_cod_prod").val("");
+         $("#txt_nom_prod").val("");
+         $("#txt_cod_barr").val("");
+         $("#txt_sku").val("");
+         $('#ro_activo').prop("checked",true);
+         $('#cro_activo').removeClass("btn-secondary").addClass("btn-primary");
+         $('#cro_inactivo').removeClass("btn-danger").addClass("btn-secondary");
+         $('#ro_inactivo').prop("disabled",true);
+
       }
 
     </script>

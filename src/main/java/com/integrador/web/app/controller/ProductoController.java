@@ -18,10 +18,12 @@ import com.integrador.web.app.interfaces.IProductoLista;
 import com.integrador.web.app.model.Categoria;
 import com.integrador.web.app.model.Marca;
 import com.integrador.web.app.model.Producto;
+import com.integrador.web.app.model.StockActual;
 import com.integrador.web.app.model.UnidadMedida;
 import com.integrador.web.app.service.CategoriaService;
 import com.integrador.web.app.service.MarcaService;
 import com.integrador.web.app.service.ProductoService;
+import com.integrador.web.app.service.StockActualService;
 import com.integrador.web.app.service.UnidadMedidaService;
 
 @Controller
@@ -40,6 +42,8 @@ public class ProductoController {
     @Autowired
     private ProductoService ProdServicio;
 
+    @Autowired
+    private StockActualService StockActuServicio;
 
     @GetMapping("")
     public ModelAndView almacen(){
@@ -107,6 +111,10 @@ public class ProductoController {
             producto.setMarca(marca);
             producto.setUnidadMedida(unidadMedida);
             ProdServicio.Insertar(producto);
+            StockActual stockActual = new StockActual();
+            stockActual.setIdProducto(producto);
+            stockActual.setCantActu(0);
+            StockActuServicio.Insertar(stockActual);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         } 

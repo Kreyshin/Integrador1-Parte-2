@@ -55,14 +55,14 @@ public class ProveedorController {
 
     @PostMapping("/insertar")
     @ResponseBody
-    public Map<String,Object> insertarUsuario(String queryData, int idTipoProveedor, int idCondPago, int idMoneda){
+    public Map<String,Object> insertarProveedor(String queryData, int idTipoProveedor, int idCondPago, int idMoneda){
         Map<String,Object> resultado = new HashMap<>();
         try {            
             Proveedor proveedor = ProvServicio.ParsearJsonModelo(queryData);
             TipoProveedor tipoProveedor = TipoProvServicio.BuscarPorId(idTipoProveedor);
             CondicionPago condicionPago = CondPagoServicio.BuscarPorId(idCondPago);
             Moneda moneda = MoneServicio.BuscarPorId(idMoneda);
-            if(proveedor.getTipDocuIden() == "RUC"){
+            if(proveedor.getTipPers() == "J"){
                 proveedor.setNomProv(proveedor.getDesRazoSoci());
             }else{
                 proveedor.setNomProv(proveedor.getPriNomb() + " " + proveedor.getSegNomb() + " " + proveedor.getApePate() + " " + proveedor.getApeMate());
@@ -81,5 +81,51 @@ public class ProveedorController {
         return resultado;
     }
 
+    @GetMapping("/buscarProveedor")
+    @ResponseBody
+    public Map<String,Object> buscarProveedor(int idProveedor){
+        Map<String,Object> resultado = new HashMap<>();
+        Proveedor proveedor = ProvServicio.BuscarPorId(idProveedor);
+        resultado.put("data", proveedor);
+        return  resultado;
+    }
+
+    @PostMapping("/actualizar")
+    @ResponseBody
+    public Map<String,Object> actualizarProveedor(String queryData, int idTipoProveedor, int idCondPago, int idMoneda){
+        Map<String,Object> resultado = new HashMap<>();
+        try {            
+            Proveedor proveedor = ProvServicio.ParsearJsonModelo(queryData);
+            TipoProveedor tipoProveedor = TipoProvServicio.BuscarPorId(idTipoProveedor);
+            CondicionPago condicionPago = CondPagoServicio.BuscarPorId(idCondPago);
+            Moneda moneda = MoneServicio.BuscarPorId(idMoneda);
+            if(proveedor.getTipPers() == "J"){
+                proveedor.setNomProv(proveedor.getDesRazoSoci());
+            }else{
+                proveedor.setNomProv(proveedor.getPriNomb() + " " + proveedor.getSegNomb() + " " + proveedor.getApePate() + " " + proveedor.getApeMate());
+            }              
+            proveedor.setIdTipoProveedor(tipoProveedor);
+            proveedor.setIdCondPago(condicionPago);
+            proveedor.setIdMoneda(moneda);
+            ProvServicio.Actualizar(proveedor);
+        } catch (Exception e) {
+          System.out.println(e.getMessage());
+        }
+       
+        List<IProveedorLista> listProveedores = ProvServicio.ListaProveedores();
+        resultado.put("lista", listProveedores);
+        return resultado;
+    }
+
+    @PostMapping("/eliminar")
+    @ResponseBody
+    public Map<String, Object> eliminarProveedor(int idUsua){
+        Map<String,Object> resultado = new HashMap<>();
+        Proveedor usuario = ProvServicio.BuscarPorId(idUsua);
+        ProvServicio.Eliminar(usuario);
+        List<Proveedor> listProveedores = ProvServicio.Listar();
+        resultado.put("lista", listProveedores);
+        return resultado;
+    }
 
 }

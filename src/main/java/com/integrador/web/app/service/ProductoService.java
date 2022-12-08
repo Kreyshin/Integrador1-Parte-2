@@ -12,6 +12,7 @@ import com.integrador.web.app.interfaceService.ICrudService;
 import com.integrador.web.app.interfaces.IProducto;
 import com.integrador.web.app.interfaces.IProductoLista;
 import com.integrador.web.app.model.Producto;
+import com.integrador.web.app.model.Interfaces.IBuscarProductos;
 
 @Service
 public class ProductoService implements ICrudService<Producto> {
@@ -75,5 +76,10 @@ public class ProductoService implements ICrudService<Producto> {
     public List<IProductoLista> ListaProductos()
     {
         return repo.listadoProductos();
+    }
+
+    public List<IBuscarProductos> FiltrarProductos(String buscar)
+    {
+        return repo.filtrarProductos(buscar);
     }
 }

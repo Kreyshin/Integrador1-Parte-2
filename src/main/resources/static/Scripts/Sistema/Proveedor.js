@@ -7,10 +7,10 @@ const TblProveedor = $('#TblProveedor').DataTable({
             className: 'text-center',
             render: function (data, type, row) {
                 switch (data) {
-                    case "M":
+                    case "J":
                         return `<span class="label label-lg font-weight-bold label-light-primary label-inline">Juridico</span>`;
                         break;
-                    case "F":
+                    case "N":
                         return `<span class="label label-lg font-weight-bold label-light-info label-inline">Natural</span>`;
                         break;
                 }
@@ -74,13 +74,13 @@ const TblProveedor = $('#TblProveedor').DataTable({
 $('#TblProveedor tbody').on( 'click', '.edit', function (e) {
    e.preventDefault();
    var data = TblProveedor.row( $(this).parents('tr') ).data();
-   BuscarUsuario(data.id);
+   BuscarProveedor(data.idProv);
 } );
 
 $('#TblProveedor tbody').on( 'click', '.delete', function (e) {
   e.preventDefault();
   var data = TblProveedor.row( $(this).parents('tr') ).data();
-  EliminarUsuario(data.id);
+  EliminarProveedor(data.idProv);
 
 } );
 
@@ -134,13 +134,18 @@ if (VGlobal.actualizar == true) {
 }    
 });
 
+$("#btn_cancelar").click((e) => {
+  LimpiarCampos();
+});
+
+
 function LlenarTabla() {
     $.ajax({
         type: "GET",
-        url: `usuario/listar`,
+        url: `proveedor/listar`,
         dataType: "json",
         success: function (response) {
-          TblUsuario.clear().rows.add(response.lista).columns.adjust().draw();
+          TblProveedor.clear().rows.add(response.lista).columns.adjust().draw();
         }
     });
 }
@@ -216,7 +221,7 @@ let metodo = function () {
         dataType: "json",
         success: function (response) {
                 FGlobal.notificacion.satisfactorio("Aviso", "Se Grabo con Exito!!");
-                TblUsuario.clear().rows.add(response.lista).columns.adjust().draw();
+                TblProveedor.clear().rows.add(response.lista).columns.adjust().draw();
                 LimpiarCampos();
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -224,23 +229,38 @@ let metodo = function () {
         }
     });
 }
-FGlobal.Confirmacion("¿Desea Grabar el Usuario?", metodo)
+FGlobal.Confirmacion("¿Desea Grabar el Proveedor?", metodo)
 }
 
-function BuscarUsuario(id) {
+function BuscarProveedor(id) {
 $.ajax({
      type: "GET",
-     url: `usuario/buscarUsuario`,
+     url: `proveedor/buscarProveedor`,
      data: {
-       idUsua: id
+      idProveedor: id
      },
      dataType: "json",
      async: false,
      success: function (response) {
-       $("#txt_id_usua").val(response.data.id);
-       $("#txt_usuario").val(response.data.usuario);
-       $("#txt_clave").val(response.data.clave);
-       $("#roles").val(response.data.rol.id).change();
+      console.log(response.data); 
+       $("#txt_id_prov").val(response.data.id);
+       if (response.data.tipPers == "J") {
+        $('#ro_juridico').prop("checked",true);
+        $("#cro_natural").removeClass("btn-info").addClass("btn-secondary");
+        $("#cro_juridico").removeClass("btn-secondary btn-primary").addClass("btn-primary");
+        $("#Cont-Data-Natural").hide();
+        $("#Cont-Data-Juridico").show();
+        }else{
+        $('#ro_natural').prop("checked",true);
+        $("#cro_juridico").removeClass("btn-primary").addClass("btn-secondary");
+        $("#cro_natural").removeClass("btn-secondary btn-info").addClass("btn-info");
+        $("#Cont-Data-Juridico").hide();
+        $("#Cont-Data-Natural").show();
+        }
+        $("#TipoDocuIden").val(response.data.tipDocuIden).change();
+        $("#txt_num_docu_iden").val(response.data.numDocuIden);
+        $("#TipoProv").val(response.data.idTipoProveedor.id).change();        
+        $("#txt_des_mail").val(response.data.desMail);       
        if (response.data.estado == "ACT") {
         $('#ro_activo').prop("checked",true);
         $('#cro_activo').removeClass("btn-secondary").addClass("btn-primary");
@@ -250,22 +270,16 @@ $.ajax({
         $('#cro_inactivo').removeClass("btn-secondary").addClass("btn-danger");
         $('#cro_activo').removeClass("btn-primary").addClass("btn-secondary");
       }
-      if (response.data.sexo == "M") {
-        $('#ro_juridico').prop("checked",true);
-        $("#cro_natural").removeClass("btn-info").addClass("btn-secondary");
-        $("#cro_juridico").removeClass("btn-secondary btn-primary").addClass("btn-primary");
-      }else{
-        $('#ro_natural').prop("checked",true);
-        $("#cro_juridico").removeClass("btn-primary").addClass("btn-secondary");
-        $("#cro_natural").removeClass("btn-secondary btn-info").addClass("btn-info");
-      }
-      $("#txt_prim_nombre").val(response.data.primNombre);
-      $("#txt_segu_nombre").val(response.data.seguNombre);
+     
+      $("#txt_pri_nombre").val(response.data.priNomb);
+      $("#txt_seg_nombre").val(response.data.SegNomb);
       $("#txt_ape_pate").val(response.data.apePate);
       $("#txt_ape_mate").val(response.data.apeMate);
-      $("#txt_num_telf").val(response.data.numTelf);
-      $("#txt_fec_naci").val(response.data.fecNaci);
+      $("#txt_des_razo_Soci").val(response.data.desRazoSoci);
+      $("#CondPago").val(response.data.idCondPago.id).change();  
+      $("#Moneda").val(response.data.idMoneda.id).change();  
       $('#ro_inactivo').prop("disabled",false);
+      $('#btn_cancelar').prop("disabled",false);
       VGlobal.actualizar = true;
      }
 });
@@ -275,29 +289,28 @@ function Actualizar() {
 let metodo = function () {
    $.ajax({
        type: "POST",
-       url: `usuario/actualizar`,
+       url: `proveedor/actualizar`,
        data: { 
-         queryData: JSON.stringify({
-           id: $("#txt_id_usua").val(),
-           usuario: $("#txt_usuario").val(),
-           clave: $("#txt_clave").val(),
-           primNombre: $("#txt_prim_nombre").val(),
-           seguNombre: $("#txt_segu_nombre").val(),
-           apePate: $("#txt_ape_pate").val(),
-           apeMate: $("#txt_ape_mate").val(),
-           sexo: $('input:radio[name=rdb_persona]:checked').val(),
-           numTelf: $("#txt_num_telf").val(),
-           fecNaci: $("#txt_fec_naci").val(),
-           estado: $('input:radio[name=rdb_estado]:checked').val(),   
-         }),
-         idRol: $("#roles option:selected").val(),
-         idEmpr: 1,
-
+        queryData: JSON.stringify({
+          tipPers: $('input:radio[name=rdb_persona]:checked').val(),
+          tipDocuIden: $("#TipoDocuIden option:selected").val(),
+          numDocuIden: $("#txt_num_docu_iden").val(),
+          desMail: $("#txt_des_mail").val(),
+          estado: $('input:radio[name=rdb_estado]:checked').val(), 
+          priNomb: $("#txt_pri_nombre").val(),
+          segNomb: $("#txt_seg_nombre").val(),
+          apePate: $("#txt_ape_pate").val(),
+          apeMate: $("#txt_ape_mate").val(), 
+          desRazoSoci: $("#txt_des_razo_Soci").val(),                       
+        }),
+        idTipoProveedor: $("#TipoProv option:selected").val(),
+        idCondPago: $("#CondPago option:selected").val(),
+        idMoneda: $("#Moneda option:selected").val()
        },
        dataType: "json",
        success: function (response) {
                FGlobal.notificacion.satisfactorio("Aviso", "Se Actualizo con Exito!!");
-               TblUsuario.clear().rows.add(response.lista).columns.adjust().draw();
+               TblProveedor.clear().rows.add(response.lista).columns.adjust().draw();
                LimpiarCampos();
        },
        error: function (jqXHR, textStatus, errorThrown) {
@@ -305,48 +318,46 @@ let metodo = function () {
        }
    });
 }
-FGlobal.Confirmacion("¿Desea Actualizar el Usuario?", metodo)
+FGlobal.Confirmacion("¿Desea Actualizar el Proveedor?", metodo)
 }
 
-function EliminarUsuario(id) {
+function EliminarProveedor(id) {
 let metodo = function () {
 $.ajax({
       type: "POST",
-      url: `usuario/eliminar`,
+      url: `proveedor/eliminar`,
       data: {
         idUsua: id
       },
       dataType: "json",
       async: false,
       success: function (response) {
-        TblUsuario.clear().rows.add(response.lista).columns.adjust().draw();
+        TblProveedor.clear().rows.add(response.lista).columns.adjust().draw();
       }
 });
 }
-FGlobal.Confirmacion("¿Desea Eliminar el Usuario?", metodo)
+FGlobal.Confirmacion("¿Desea Eliminar el Proveedor?", metodo)
 }
 
 function LimpiarCampos() {
-   $("#txt_id_usua").val("");
-   $("#txt_usuario").val("");
-   $("#txt_clave").val("");
-   $("#txt_id_usua").val("");
-   $("#txt_id_usua").val("");
-   $("#txt_id_usua").val("");
+   $("#txt_id_prov").val("");
+   $('#ro_juridico').prop("checked",true);
+   $('#cro_juridico').removeClass("btn-secondary").addClass("btn-primary");
+   $('#cro_natural').removeClass("btn-info").addClass("btn-secondary");
+   $('#ro_natural').prop("disabled",false);
+   $("#TipoDocuIden").val('RUC').change();
+   $("#lbl_num_docu_iden").text("Numero RUC")
+   $("#txt_num_docu_iden").val("");
+   $("#txt_des_mail").val("");
    $('#ro_activo').prop("checked",true);
    $('#cro_activo').removeClass("btn-secondary").addClass("btn-primary");
    $('#cro_inactivo').removeClass("btn-danger").addClass("btn-secondary");
    $('#ro_inactivo').prop("disabled",true);
-
-   $('#ro_juridico').prop("checked",true);
-   $('#cro_juridico').removeClass("btn-secondary").addClass("btn-primary");
-   $('#cro_natural').removeClass("btn-info").addClass("btn-secondary");
-   $('#ro_natural').prop("disabled",true);
-   $("#txt_prim_nombre").val("");
-   $("#txt_segu_nombre").val("");
+   $("#txt_pri_nombre").val("");
+   $("#txt_seg_nombre").val("");
    $("#txt_ape_pate").val("");
    $("#txt_ape_mate").val("");
-   $("#txt_num_telf").val("");
+   $("#txt_des_razo_Soci").val("");
    $("#txt_fec_naci").val("");
 }
 

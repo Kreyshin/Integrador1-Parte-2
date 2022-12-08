@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.integrador.web.app.model.Producto;
+import com.integrador.web.app.model.Interfaces.IBuscarProductos;
 
 @Repository
 public interface IProducto extends JpaRepository<Producto,Integer> {
@@ -23,4 +25,7 @@ public interface IProducto extends JpaRepository<Producto,Integer> {
                  + "pr.unidad_medida_id_unidad_medida  = um.id_unidad_medida"
     , nativeQuery = true)
     List<IProductoLista> listadoProductos();
+
+    @Query(value = "{call sp_filtrar_productos(:ISDES_BUSQ)}", nativeQuery = true)
+    List<IBuscarProductos> filtrarProductos(@Param("ISDES_BUSQ") String DesBusq);
 }

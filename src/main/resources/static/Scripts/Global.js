@@ -61,6 +61,16 @@ const FGlobal = {
             content: mensaje,
         });
     },
+    NotificacionCorrecta: (mensaje) => {
+        $.alert({
+            closeIcon: true,
+            icon: 'fas fa-check',
+            theme: 'material',
+            type: 'green',
+            title: "Aviso!!",
+            content: mensaje,
+        });
+    },
     LibValidacion: {
         ValidarCampos: (campos) => {
             var error = 0;

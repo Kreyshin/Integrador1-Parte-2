@@ -1,7 +1,6 @@
 package com.integrador.web.app.interfaceService;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ICrudService<T> {
     public List<T> Listar();

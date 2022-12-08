@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.integrador.web.app.interfaceService.ICrudService;
@@ -12,6 +12,7 @@ import com.integrador.web.app.interfaces.IProveedor;
 import com.integrador.web.app.model.Proveedor;
 import com.integrador.web.app.model.Interfaces.IProveedorLista;
 
+@Service
 public class ProveedorService implements ICrudService<Proveedor> {
 
     @Autowired
@@ -40,13 +41,17 @@ public class ProveedorService implements ICrudService<Proveedor> {
 
     @Override
     public int Actualizar(Proveedor clase) {
-        // TODO Auto-generated method stub
-        return 0;
+        int res = 0;
+        Proveedor proveedor = repo.save(clase);
+        if(!proveedor.equals(null)){
+            res = 1;
+        }      
+        return res;
     }
 
     @Override
     public int Eliminar(Proveedor clase) {
-        // TODO Auto-generated method stub
+        repo.delete(clase);
         return 0;
     }
 
