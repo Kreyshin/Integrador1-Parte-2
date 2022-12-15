@@ -1,5 +1,6 @@
 package com.integrador.web.app.controller;
 
+import java.io.Console;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +28,8 @@ public class HomeController {
     @ResponseBody
     public Map<String,Object> inicarSesion(String usuario, String clave){
         Map<String,Object> resultado = new HashMap<>();
-
+        System.out.println(clave);
+        System.out.println(usuario);
         return resultado;
     }
 

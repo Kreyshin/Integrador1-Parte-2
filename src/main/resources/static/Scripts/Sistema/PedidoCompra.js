@@ -23,8 +23,13 @@ const TblDetallePedido = $('#TblDetallePedido').DataTable({
         { data: 'codProd' },
         { data: 'nomProd' },
         { 
-            data: null,
-            defaultContent: '<input class="form-control form-control-sm text-right cantidad-unit" type="text" id="" name="" value="1">'
+            data: 'canProd',
+            render: function (data, type, row, meta) {
+              return type === 'display'
+                  ? `<input class="form-control form-control-sm text-right cantidad-unit" type="text" id="" name="" value="${data}">`
+                  : data;
+            },
+            defaultContent: `<input class="form-control form-control-sm text-right cantidad-unit" type="text" id="" name="" value="1">`
         },
         { 
             data: 'costProd',
@@ -49,14 +54,16 @@ const TblDetallePedido = $('#TblDetallePedido').DataTable({
 });
 
 
+
+
+ObtenerNumeroPedido()
+
 $("#BtnBusqProducto").click(function (e) { 
   e.preventDefault();
   if($("#TxtBusqProducto").val() != ""){
     FiltrarProductos();
   }
 });
-
-
 $("#BtnAgregarProductos").click(function (e) { 
   e.preventDefault();
   var Secuencias = [];
@@ -66,6 +73,7 @@ $("#BtnAgregarProductos").click(function (e) {
         "idProd" : $(this).attr("data-id"),
         "codProd": $(this).attr("data-cod-comp"),
         "nomProd": $(this).attr("data-nom-prod"),
+        "canProd": 1,
         "costProd" : $(this).attr("data-cos-unit"),
 
       }
@@ -74,13 +82,50 @@ $("#BtnAgregarProductos").click(function (e) {
   });
   $("#CListProductos .seleccion").toggleClass('seleccion')
 });
-
 $("#BtnGrabarPedido").click(function (e) { 
   e.preventDefault();
-  FGlobal.NotificacionCorrecta("Se creó correctamente el pedido de compra");
+  let deta = $('#TblDetallePedido').DataTable().rows().data().toArray();
+  console.log(deta);
+  let metodo = function () {
+    $.ajax({
+        type: "POST",
+        url: `pedidoCompra/insertar`,
+        data: { 
+          queryData: JSON.stringify({
+            numPediComp: $("#LblNumPediComp").text(),
+            fecEmis: $("#txt_fec_emis").val(),
+            fecExpi: $("#txt_fec_expi").val(),
+            facCamb: 0,
+            facCambBase: 0, 
+            porIgv: 0,
+            impIgv: 0,
+            impTota: 0,
+            observacion: $("#txt_des_obse").val(), 
+            estado: "ACT",
+            atencion: "INI", 
+            direccion:    $("#txt_des_dire").val(),                    
+          }),
+          IdEmpresa: 1,
+          queryDeta: JSON.stringify(deta),
+          IdAlmacen: $('#SLAlmacen').select2('data')[0].id,
+          idCondPago: $('#SLCondicionPago').select2('data')[0].id,
+          idMoneda: $('#SLMoneda').select2('data')[0].id,
+          IdProv: $('#SLProveedor').select2('data')[0].id
+        },
+        dataType: "json",
+        success: function (response) {
+          FGlobal.NotificacionCorrecta("Se creó correctamente el pedido de compra");
+              LimpiarCampos();
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+
+        }
+    });
+}
+FGlobal.Confirmacion("¿Desea Grabar el Pedido de Compra?", metodo)
+
+
 });
-
-
 $('#TblDetallePedido tbody').on( 'click', '.delete', function (e) {
   e.preventDefault();
   TblDetallePedido
@@ -127,7 +172,22 @@ $("#CListProductos").off('click', '.card-detalle-pedido').on('click', '.card-det
 
 
 
-
+function LimpiarCampos(){
+  TblDetallePedido.clear().draw();
+  $("#CListProductos").empty();
+  let vacio = `<div id="CVacio" class="d-flex flex-column justify-content-center">
+  <span class="text-center text-dark-25" ><i class="fas fa-plus-square" style="font-size: 5rem;"></i></span>
+  <span class="text-center text-dark-25 font-weight-bold" style="font-size: 1.5rem;">Buscar Productos</span>
+</div>   `
+$("#CListProductos").append(vacio);
+$('#SLProveedor').val(null).trigger('change');
+$('#SLMoneda').val(null).trigger('change');
+$('#SLCondicionPago').val(null).trigger('change');
+$('#SLAlmacen').val(null).trigger('change');
+$('#txt_des_dire').val("")
+$('#txt_des_obse').val("")
+ObtenerNumeroPedido();
+} 
 
 function LlenarProveedores() {
     let data
@@ -210,6 +270,19 @@ function LlenarProveedores() {
               </div>`
                 $("#CListProductos").append(option);
               });
+        }
+      });
+  } 
+
+  function ObtenerNumeroPedido(){
+    $.ajax({
+        type: "GET",
+        url: `pedidoCompra/ObtenerNumeroPedido`,
+        async: false,
+        data:{},
+        dataType: "json",
+        success: function (response) {
+          $("#LblNumPediComp").text(response.numero);
         }
       });
   } 

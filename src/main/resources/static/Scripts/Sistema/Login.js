@@ -38,9 +38,12 @@ $('#BtnIniciarSesion').on('click', function (e) {
             type: "POST",
             dataType: "json",
             url: "/IniciarSesion",
-            data: "data",
+            data: {
+                usuario : $("#txt_usuario").val(),
+                clave: $("#txt_clave").val(),
+            },
             success: function (response) {
-                
+                window.location.href = "http://localhost:8080/Inicio";
             }
           });
         } else {
